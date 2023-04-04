@@ -1,0 +1,26 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Author {
+  id: ID!
+  email: String!
+  first_name: String!
+  last_name: String!
+  avatar: String
+  gender: String
+  password: String!
+  public_address: String
+  nonce: Float
+  is_verified: String!
+  is_active: String!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+type Query {
+  hellooo: String!
+  getAuthors: [Author!]!
+  getAuthorById(id: Float!): Author
+}
