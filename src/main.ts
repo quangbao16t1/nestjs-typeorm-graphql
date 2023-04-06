@@ -28,8 +28,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix(common_const.API_PREFIX);
   // app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(configService.get<number>('PORT') || 3000);
 }

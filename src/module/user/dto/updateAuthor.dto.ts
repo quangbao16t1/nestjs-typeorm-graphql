@@ -1,12 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import PostInput from '../posts/post.model';
 
 @InputType()
-@ObjectType()
-class AuthorInput {
-  @Field()
-  email: string;
-
+export class UpdateAuthorDto {
   @Field()
   first_name: string;
 
@@ -14,19 +9,14 @@ class AuthorInput {
   last_name: string;
 
   @Field({ nullable: true })
-  avatar: string;
-
-  @Field({ nullable: true })
-  gender: string;
-
-  @Field()
-  password: string;
+  gender: boolean;
 
   @Field({ nullable: true })
   public_address: string;
 
   @Field({ nullable: true })
+  avatar: string;
+
+  @Field()
   nonce: number;
 }
-
-export default AuthorInput;

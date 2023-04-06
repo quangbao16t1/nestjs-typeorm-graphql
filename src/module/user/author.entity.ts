@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Post } from "../post/post.entity";
 
 @ObjectType()
 @Entity({name: 'authors'})
@@ -26,7 +27,7 @@ export class Author {
 
     @Field({nullable: true})
     @Column()
-    gender?: string;
+    gender?: boolean;
 
     @Field()
     @Column()
@@ -59,4 +60,8 @@ export class Author {
     @Field({nullable: true})
     @DeleteDateColumn()
     deleted_at: string;
+
+    @Field(type => [Post], { nullable: true })
+    @OneToMany(type => Post, post => post.author)
+    posts: Post[];
 }

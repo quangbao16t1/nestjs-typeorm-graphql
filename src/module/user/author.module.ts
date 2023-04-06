@@ -5,7 +5,7 @@ import { jwt_config } from 'src/config/constant.config';
 import { AuthorController } from './author.controller';
 import { Author } from './author.entity';
 import { AuthorService } from './author.service';
-import AuthorsResolver from './../../resolvers/authors/author.resolver'
+import AuthorsResolver from './author.resolver'
 
 @Module({
   imports: [

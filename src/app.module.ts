@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { typeOrmAsyncConfig } from './config/typeorm.config';
-import AuthorResolver from './resolvers/authors/author.resolver';
+import AuthorResolver from './module/user/author.resolver';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AuthorModule } from './module/user/author.module';
 import { PostModule } from './module/post/post.module';

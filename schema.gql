@@ -2,13 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Post {
+  id: Float!
+  user_id: Float!
+  title: String!
+  content: String!
+  imageCover: String
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+  author: [Author!]!
+}
+
 type Author {
   id: ID!
   email: String!
   first_name: String!
   last_name: String!
   avatar: String
-  gender: String
+  gender: Boolean
   password: String!
   public_address: String
   nonce: Float
@@ -17,10 +29,40 @@ type Author {
   created_at: String!
   updated_at: String!
   deleted_at: String
+  posts: [Post!]
 }
 
 type Query {
   hellooo: String!
   getAuthors: [Author!]!
   getAuthorById(id: Float!): Author
+}
+
+type Mutation {
+  createAuthor(data: CreateAuthorDto!): Author!
+  updateAuthor(id: Float!, data: UpdateAuthorDto!): Author!
+  createPost(data: CreatePostDto!): Post!
+}
+
+input CreateAuthorDto {
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+}
+
+input UpdateAuthorDto {
+  first_name: String!
+  last_name: String!
+  gender: Boolean
+  public_address: String
+  avatar: String
+  nonce: Float!
+}
+
+input CreatePostDto {
+  user_id: Float!
+  content: String!
+  title: String!
+  imageCover: String!
 }
