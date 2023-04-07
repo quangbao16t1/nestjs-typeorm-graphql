@@ -62,6 +62,6 @@ export class Author {
     deleted_at: string;
 
     @Field(type => [Post], { nullable: true })
-    @OneToMany(type => Post, post => post.author)
+    @OneToMany(() => Post, post => post.author)
     posts: Post[];
 }

@@ -61,7 +61,6 @@ input UpdateAuthorDto {
 }
 
 input CreatePostDto {
-  user_id: Float!
   content: String!
   title: String!
   imageCover: String!

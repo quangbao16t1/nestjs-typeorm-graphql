@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Author } from "../user/author.entity";
 
 @ObjectType()
@@ -39,6 +39,7 @@ export class Post {
     deleted_at: string;
 
     @Field(type => [Author], { nullable: false})
-    @ManyToOne(type => Author, author => author.posts)
+    @ManyToOne(() => Author, author => author.posts)
+    @JoinColumn({ name: 'user_id' })
     author: Author
 }

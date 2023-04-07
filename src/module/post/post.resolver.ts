@@ -1,8 +1,10 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, Mutation, Parent, ResolveProperty, Resolver } from "@nestjs/graphql"
+import { Args, Context, Info, Mutation, Parent, ResolveProperty, Resolver } from "@nestjs/graphql"
 import { GraphQLError } from "graphql";
+import { CurrentUser, User } from "src/decorator/user.decorator";
 import RepoService from "src/module/repo/repo.service";
 import { AuthGuard } from "../auth/strategy/auth.guard";
+import { GqlAuthGuard } from "../auth/strategy/gql-auth.guard";
 import { CreatePostDto } from "./dto/createPost.dto";
 import { Post } from "./post.entity";
 
@@ -15,12 +17,14 @@ class PostResolver {
   //   return this.repoService.authorRepo.findOne(parent.authorId);
   // }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation( returns => Post)
   public async createPost(
     @Args('data') data: CreatePostDto,
+    @CurrentUser() author: any
   ): Promise<Post> {
-    const { content, imageCover, title, user_id } = data
+    const { content, imageCover, title } = data
+    const { sub: user_id } = author
 
     const user = await this.repoService.authorRepo.findOne({
       where: { id: user_id },

@@ -1,11 +1,11 @@
-import { Inject } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import RepoService from 'src/module/repo/repo.service';
 import { Author } from 'src/module/user/author.entity';
 import { CreateAuthorDto } from './dto/createAuthor.dto';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import { UpdateAuthorDto } from './dto/updateAuthor.dto';
+import { Post } from '../post/post.entity';
 
 @Resolver((of) => Author)
 class AuthorResolver {
@@ -19,6 +19,12 @@ class AuthorResolver {
   @Query((returns) => [Author])
   public async getAuthors(): Promise<Author[]> {
     return await this.repoService.authorRepo.find();
+  }
+
+  @ResolveField('posts', returns => [Post])
+  async posts(@Parent() author: Author) {
+    const { id } = author;
+    return await this.repoService.postRepo.find({ user_id: id });
   }
 
   @Query(() => Author, { nullable: true })
@@ -53,23 +59,11 @@ class AuthorResolver {
     @Args('id') id: number,
     @Args('data') data: UpdateAuthorDto,
   ): Promise<Author> {
-    const { first_name, last_name, nonce, public_address,  avatar, gender} = data;
-
     const user = await this.repoService.authorRepo.findOne({ where: { id } });
 
     if (!user) throw new GraphQLError('Author does not exists!');
 
-    // const hashPassword = await bcrypt.hashSync(password, 12);
-    Object.assign(user, data)
-
-    // const newAuthor = await this.repoService.authorRepo.update(id, {
-    //   nonce: nonce ? nonce : user.nonce,
-    //   first_name: first_name ? first_name : user.first_name,
-    //   last_name: last_name ? last_name : user.last_name,
-    //   public_address: public_address ? public_address : user.public_address,
-    //   avatar: avatar ? avatar : user.avatar,
-    //   gender: gender ? gender : user.gender,
-    // });
+    Object.assign(user, data);
 
     return await this.repoService.authorRepo.save(user);
   }
