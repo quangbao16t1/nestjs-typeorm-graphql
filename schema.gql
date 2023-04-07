@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Vote {
+  id: Float!
+  user_id: Float!
+  post_id: Float!
+  vote: String!
+  publish: Boolean
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+  author: [Author!]!
+  post: [Post!]!
+}
+
 type Post {
   id: Float!
   user_id: Float!
@@ -12,6 +25,23 @@ type Post {
   updated_at: String!
   deleted_at: String
   author: [Author!]!
+  comments: [Comment!]
+  votes: [Vote!]
+}
+
+type Comment {
+  id: Float!
+  user_id: Float!
+  post_id: Float!
+  parent_id: Float
+  content: String!
+  attachment: String
+  publish: Boolean
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+  author: [Author!]!
+  post: [Post!]!
 }
 
 type Author {
@@ -30,6 +60,8 @@ type Author {
   updated_at: String!
   deleted_at: String
   posts: [Post!]
+  comments: [Comment!]
+  votes: [Vote!]
 }
 
 type Query {

@@ -14,6 +14,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './module/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwt_config } from './config/constant.config';
+import { CommentModule } from './module/comment/comment.module';
 
 const graphQLImports = [
   AuthorResolver,
@@ -37,7 +38,8 @@ const graphQLImports = [
     AuthorModule,
     PostModule,
     AuthModule,
-    RepoModule
+    RepoModule,
+    CommentModule
   ],
   controllers: [AppController],
   providers: [AppService],

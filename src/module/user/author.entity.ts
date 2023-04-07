@@ -1,6 +1,8 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Comment } from "../comment/comment.entity";
 import { Post } from "../post/post.entity";
+import { Vote } from "../vote/vote.entity";
 
 @ObjectType()
 @Entity({name: 'authors'})
@@ -64,4 +66,12 @@ export class Author {
     @Field(type => [Post], { nullable: true })
     @OneToMany(() => Post, post => post.author)
     posts: Post[];
+
+    @Field(type => [Comment], { nullable: true })
+    @OneToMany(() => Comment, comment => comment.author)
+    comments: Comment[];
+
+    @Field(type => [Vote], { nullable: true })
+    @OneToMany(() => Vote, vote => vote.post)
+    votes: Vote[];
 }
