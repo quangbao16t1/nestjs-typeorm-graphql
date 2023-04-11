@@ -40,7 +40,7 @@ export class Post {
     @DeleteDateColumn()
     deleted_at: string;
 
-    @Field(type => [Author], { nullable: false})
+    @Field(type => Author, { nullable: true})
     @ManyToOne(() => Author, author => author.posts)
     @JoinColumn({ name: 'user_id' })
     author: Author

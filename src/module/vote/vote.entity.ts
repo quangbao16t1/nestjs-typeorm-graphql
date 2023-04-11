@@ -31,10 +31,6 @@ export class Vote {
   @Column()
   vote: string;
 
-  @Field({ nullable: true })
-  @Column({ default: true })
-  publish: boolean;
-
   @Field()
   @CreateDateColumn()
   created_at: string;

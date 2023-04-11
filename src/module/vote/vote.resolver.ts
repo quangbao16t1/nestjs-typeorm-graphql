@@ -17,12 +17,13 @@ import { AuthGuard } from '../auth/strategy/auth.guard';
 import { GqlAuthGuard } from '../auth/strategy/gql-auth.guard';
 import { Post } from '../post/post.entity';
 import { Author } from '../user/author.entity';
-import { Comment } from './comment.entity';
-import { CreateCommentDto } from './dto/createComment.dto';
-import { UpdateCommentDto } from './dto/updateComment.dto';
+import { Comment } from '../comment/comment.entity';
+import { Vote } from './vote.entity';
+import { CreateVoteDto } from './dto/createVote.dto';
+import { UpdateVoteDto } from './dto/updateVote.dto';
 
-@Resolver(of => Comment)
-class CommentResolver {
+@Resolver(of => Vote)
+class VoteResolver {
   constructor(private readonly repoService: RepoService) {}
 
   // @ResolveProperty()
@@ -30,23 +31,29 @@ class CommentResolver {
   //   return this.repoService.authorRepo.findOne(parent.authorId);
   // }
 
-  @Query(returns => [Comment])
-  async getAllComments(): Promise<Comment[]> {
-    return await this.repoService.commentRepo.find();
+  @Query(returns => [Vote])
+  async getAllVotes(): Promise<Vote[]> {
+    return await this.repoService.voteRepo.find();
   }
 
   @ResolveField('author', returns => Author)
-  async getAuthor(@Parent() comment: Comment): Promise<Author> {
-    const { user_id } = comment;
+  async getAuthorOfVote(@Parent() vote: Vote): Promise<Author> {
+    const { user_id } = vote;
 
     return await this.repoService.authorRepo.findOne({ id: user_id });
   }
 
   @ResolveField('post', returns => Post)
-  async getPost(@Parent() comment: Comment): Promise<Post> {
-    const { post_id } = comment;
+  async getPostOfVote(@Parent() vote: Vote): Promise<Post> {
+    const { post_id } = vote;
     
     return await this.repoService.postRepo.findOne({ id: post_id });
+  }
+
+  @ResolveField('comments', (returns) => [Comment])
+  async getComments(@Parent() post: Post) {
+    const { id } = post;
+    return await this.repoService.commentRepo.find({ post_id: id, parent_id: null });
   }
 
   @ResolveField('childComments', returns => [Comment])
@@ -57,11 +64,11 @@ class CommentResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation((returns) => Comment)
-  public async createComment(
-    @Args('data') data: CreateCommentDto,
+  @Mutation((returns) => Vote)
+  public async createVote(
+    @Args('data') data: CreateVoteDto,
     @CurrentUser() author: any,
-  ): Promise<Comment> {
+  ): Promise<Vote> {
     const { post_id, ...payloadCreate } = data;
     const { sub: user_id } = author;
 
@@ -71,34 +78,34 @@ class CommentResolver {
 
     if (!post) throw new GraphQLError('Post does not exist!!!');
 
-    const newComment = await this.repoService.commentRepo.create({
+    const newVote = await this.repoService.voteRepo.create({
       user_id,
       post_id,
       ...payloadCreate,
     });
 
-    return await this.repoService.commentRepo.save(newComment);
+    return await this.repoService.voteRepo.save(newVote);
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation((returns) => Comment)
-  async updateComment(
+  @Mutation((returns) => Vote)
+  async updateVote(
     @Args('id') id: number,
-    @Args('data') data: UpdateCommentDto,
+    @Args('data') data: UpdateVoteDto,
     @CurrentUser() author: any,
   ) {
     const { sub: user_id } = author;
-    const commentUpdate = await this.repoService.commentRepo.findOne({
+    const voteUpdate = await this.repoService.voteRepo.findOne({
       id,
       user_id,
     });
 
-    if (!commentUpdate) throw new GraphQLError('Comment not found!!!');
+    if (!voteUpdate) throw new GraphQLError('Vote not found!!!');
 
-    Object.assign(commentUpdate, data);
+    if (voteUpdate.vote === 'up') Object.assign(voteUpdate)
 
-    return await this.repoService.commentRepo.save(commentUpdate);
+    return await this.repoService.voteRepo.save(voteUpdate);
   }
 }
 
-export default CommentResolver;
+export default VoteResolver;

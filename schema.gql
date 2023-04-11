@@ -7,12 +7,13 @@ type Vote {
   user_id: Float!
   post_id: Float!
   vote: String!
-  publish: Boolean
   created_at: String!
   updated_at: String!
   deleted_at: String
-  author: [Author!]!
-  post: [Post!]!
+  author: Author!
+  post: Post!
+  comments: [Comment!]!
+  childComments: [Comment!]!
 }
 
 type Post {
@@ -24,8 +25,8 @@ type Post {
   created_at: String!
   updated_at: String!
   deleted_at: String
-  author: [Author!]!
-  comments: [Comment!]
+  author: Author!
+  comments: [Comment!]!
   votes: [Vote!]
 }
 
@@ -40,8 +41,10 @@ type Comment {
   created_at: String!
   updated_at: String!
   deleted_at: String
-  author: [Author!]!
-  post: [Post!]!
+  author: Author!
+  post: Post!
+  childComments: [Comment!]!
+  parentComment: Comment!
 }
 
 type Author {
@@ -68,12 +71,21 @@ type Query {
   hellooo: String!
   getAuthors: [Author!]!
   getAuthorById(id: Float!): Author
+  getPosts: [Post!]!
+  getPostById(id: Float!): Post!
+  getAllComments: [Comment!]!
+  getAllVotes: [Vote!]!
 }
 
 type Mutation {
   createAuthor(data: CreateAuthorDto!): Author!
   updateAuthor(id: Float!, data: UpdateAuthorDto!): Author!
   createPost(data: CreatePostDto!): Post!
+  updatePost(data: UpdatePostDto!, id: Float!): Post!
+  createComment(data: CreateCommentDto!): Comment!
+  updateComment(id: Float!, data: UpdateCommentDto!): Comment!
+  createVote(data: CreateVoteDto!): Vote!
+  updateVote(id: Float!, data: UpdateVoteDto!): Vote!
 }
 
 input CreateAuthorDto {
@@ -96,4 +108,33 @@ input CreatePostDto {
   content: String!
   title: String!
   imageCover: String!
+}
+
+input UpdatePostDto {
+  content: String!
+  title: String!
+  imageCover: String!
+}
+
+input CreateCommentDto {
+  post_id: Float!
+  parent_id: Float
+  content: String!
+  attachment: String
+  publish: Boolean
+}
+
+input UpdateCommentDto {
+  content: String
+  attachment: String
+  publish: Boolean
+}
+
+input CreateVoteDto {
+  post_id: Float!
+  vote: String!
+}
+
+input UpdateVoteDto {
+  vote: String!
 }

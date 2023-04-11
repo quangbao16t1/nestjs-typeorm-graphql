@@ -15,6 +15,7 @@ import { AuthModule } from './module/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwt_config } from './config/constant.config';
 import { CommentModule } from './module/comment/comment.module';
+import { VoteModule } from './module/vote/vote.module';
 
 const graphQLImports = [
   AuthorResolver,
@@ -39,7 +40,8 @@ const graphQLImports = [
     PostModule,
     AuthModule,
     RepoModule,
-    CommentModule
+    CommentModule,
+    VoteModule
   ],
   controllers: [AppController],
   providers: [AppService],

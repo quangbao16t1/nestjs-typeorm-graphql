@@ -6,6 +6,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -55,13 +56,22 @@ export class Comment {
   @DeleteDateColumn()
   deleted_at: string;
 
-  @Field((type) => [Author], { nullable: false })
+  @Field((type) => Author, { nullable: false })
   @ManyToOne(() => Author, (author) => author.comments)
   @JoinColumn({ name: 'user_id' })
   author: Author;
 
-  @Field((type) => [Post], { nullable: false })
+  @Field((type) => Post, { nullable: false })
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn({ name: 'post_id' })
   post: Post;
+
+  @Field(type => [Comment], { nullable: true })
+  @OneToMany(() => Comment, comment => comment.parentComment)
+  childComments: Comment[];
+
+  @Field(type => Comment, { nullable: false})
+  @ManyToOne(() => Comment, comment => comment.childComments)
+  @JoinColumn({ name: 'parent_id' })
+  parentComment: Comment
 }
