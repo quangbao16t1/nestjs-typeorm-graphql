@@ -5,6 +5,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwt_config } from 'src/config/constant.config';
+import { GoogleStrategy } from './strategy/google.strategy';
+import { GithubOauthStrategy } from './strategy/github.strategy';
 
 @Module({
   imports: [
@@ -14,10 +16,8 @@ import { jwt_config } from 'src/config/constant.config';
       signOptions: { expiresIn: jwt_config.EXPIRES_IN },
     }),
   ],
-  controllers: [
-    AuthController
-  ],
-  providers: [AuthService],
+  controllers: [AuthController],
+  providers: [AuthService, GoogleStrategy, GithubOauthStrategy],
   exports: [],
 })
 

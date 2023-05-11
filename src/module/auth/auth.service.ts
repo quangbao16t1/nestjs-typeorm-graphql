@@ -13,7 +13,7 @@ import { jwt_config } from 'src/config/constant.config';
 export class AuthService {
   constructor(
     @InjectRepository(Author) private authRepository: Repository<Author>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<any> {
@@ -50,10 +50,13 @@ export class AuthService {
       if (!bcrypt.compareSync(password, user.password))
         throw new HttpExceptionFilter();
 
-      const token = await this.jwtService.signAsync({ sub: user.id }, {
-        expiresIn: jwt_config.EXPIRES_IN,
-        secret: jwt_config.SECRET
-      });
+      const token = await this.jwtService.signAsync(
+        { sub: user.id },
+        {
+          expiresIn: jwt_config.EXPIRES_IN,
+          secret: jwt_config.SECRET,
+        },
+      );
 
       return {
         user,
@@ -62,5 +65,108 @@ export class AuthService {
     } catch (error) {
       throw new Error(error.message);
     }
+  }
+
+  async googleLogin(req: any) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+
+    const { email, first_name, last_name, avatar } = req.user;
+
+    const userExit = await this.authRepository.findOne({ email });
+
+    if (userExit) {
+      Object.assign(userExit, { first_name, last_name, avatar });
+      const userUpdate = await this.authRepository.save(userExit);
+
+      const token = await this.jwtService.signAsync(
+        { sub: userExit.id },
+        {
+          expiresIn: jwt_config.EXPIRES_IN,
+          secret: jwt_config.SECRET,
+        },
+      );
+
+      return {
+        message: 'User information from google',
+        user: userUpdate,
+        token,
+      };
+    }
+
+    const newUser = await this.authRepository.create({
+      email,
+      first_name,
+      last_name,
+      avatar,
+    });
+
+    const userCreated = await this.authRepository.save(newUser);
+
+    const token = await this.jwtService.signAsync(
+      { sub: userCreated.id },
+      {
+        expiresIn: jwt_config.EXPIRES_IN,
+        secret: jwt_config.SECRET,
+      },
+    );
+
+    return {
+      message: 'User information from google',
+      user: userCreated,
+      token,
+    };
+  }
+
+  async githubLogin(req: any) {
+    if (!req.user) {
+      return 'No user from github';
+    }
+
+    const { email, first_name, avatar } = req.user;
+
+    const userExit = await this.authRepository.findOne({ email });
+
+    if (userExit) {
+      Object.assign(userExit, { first_name, avatar });
+      const userUpdate = await this.authRepository.save(userExit);
+
+      const token = await this.jwtService.signAsync(
+        { sub: userExit.id },
+        {
+          expiresIn: jwt_config.EXPIRES_IN,
+          secret: jwt_config.SECRET,
+        },
+      );
+
+      return {
+        message: 'User information from github',
+        user: userUpdate,
+        token,
+      };
+    }
+
+    const newUser = await this.authRepository.create({
+      email,
+      first_name,
+      avatar,
+    });
+
+    const userCreated = await this.authRepository.save(newUser);
+
+    const token = await this.jwtService.signAsync(
+      { sub: userCreated.id },
+      {
+        expiresIn: jwt_config.EXPIRES_IN,
+        secret: jwt_config.SECRET,
+      },
+    );
+
+    return {
+      message: 'User information from github',
+      user: userCreated,
+      token,
+    };
   }
 }

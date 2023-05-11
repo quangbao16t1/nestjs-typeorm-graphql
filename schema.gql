@@ -54,7 +54,7 @@ type Author {
   last_name: String!
   avatar: String
   gender: Boolean
-  password: String!
+  password: String
   public_address: String
   nonce: Float
   is_verified: String!

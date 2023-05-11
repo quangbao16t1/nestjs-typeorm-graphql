@@ -1,4 +1,5 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -22,4 +23,28 @@ export class AuthController {
 
     return result;
   }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req) {
+    return await this.authService.googleLogin(req)
+  }
+
+  @Get('github')
+	@UseGuards(AuthGuard('github'))
+	async githubAuth() {
+		// With `@UseGuards(GithubOauthGuard)` we are using an AuthGuard that @nestjs/passport
+		// automatically provisioned for us when we extended the passport-github strategy.
+		// The Guard initiates the passport-github flow.
+	}
+
+	@Get('github/callback')
+	@UseGuards(AuthGuard('github'))
+	async githubAuthCallback(@Req() req, @Res({ passthrough: true }) res) {
+    return await this.authService.githubLogin(req);
+	}
 }

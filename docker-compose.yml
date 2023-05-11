@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.8"
 
 services:
   mysql:
@@ -13,20 +13,6 @@ services:
       # MYSQL_PASSWORD: 12345
     volumes:
       - ./data:/var/lib/mysql
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: pma
-    links:
-      - mysql
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-    restart: always
-    ports:
-      - 8081:80
-    volumes:
-      - ./data:/var/lib/mysql
   backend:
     container_name: nestjs-graphql
     image: nestjs_graphql_api
@@ -37,6 +23,11 @@ services:
     tty: true
     depends_on:
       - mysql
-      - phpmyadmin
     environment:
       HOST: 0.0.0.0
+    volumes:
+      - ./:/src
+networks:
+  default:
+    external:
+      name: 'baonetwork'

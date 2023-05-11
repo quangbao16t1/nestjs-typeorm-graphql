@@ -31,9 +31,9 @@ export class Author {
     @Column()
     gender?: boolean;
 
-    @Field()
+    @Field({nullable: true})
     @Column()
-    password: string;
+    password?: string;
 
     @Field({nullable: true})
     @Column()
