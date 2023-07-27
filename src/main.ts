@@ -27,9 +27,9 @@ async function bootstrap() {
   SwaggerModule.setup('api-swagger', app, document);
 
   app.setGlobalPrefix(common_const.API_PREFIX);
-  // app.useGlobalInterceptors(new TransformInterceptor());
-  // app.useGlobalPipes(new ValidationPipe());
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(configService.get<number>('PORT') || 3000);
 }
